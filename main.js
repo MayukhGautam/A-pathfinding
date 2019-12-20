@@ -1,7 +1,7 @@
 /*
       MAYUKH MIKE YASIR
       
-      FINISHED PART 1 VERSION
+      Version 1.1
       
       ADDED NON OBJECT ORIENTED OBSTACLES
 
@@ -137,7 +137,12 @@ function setup() {
   }
   
   start = grid[0][0];
-  end = grid[cols-1][rows-1];
+  end = grid[cols - 1][rows-1];
+  
+  start.pass = true;
+  end.pass = true;
+  start.f = 0;
+  end.f = 0;
   
   openSet.push(start);
   
@@ -267,7 +272,7 @@ function draw() {
   
   for ( let i = 0; i< path.length; i++) {
     
-    path[i].show(color(255,0,255));
+    path[i].show(color(0,255,255));
     
   }
   

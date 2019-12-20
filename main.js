@@ -47,6 +47,13 @@ function Spot(i,j){
   this.h = 0;
   this.previous = undefined;
   this.neighbors = [];
+      
+  this.blocked = function(){
+  
+        
+        
+        
+  }
   
   this.show = function(col){
     

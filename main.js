@@ -25,8 +25,8 @@ function heuristic(a,b){
 
 
 
-const cols = 25;
-const rows = 25;
+const cols = 30;
+const rows = 30;
 
 let openSet = [];
 let closedSet = [];
@@ -45,6 +45,7 @@ function Spot(i,j){
   this.f = 0;
   this.g = 0;
   this.h = 0;
+  this.pass = true;
   this.previous = undefined;
   this.neighbors = [];
   
@@ -91,7 +92,7 @@ function Spot(i,j){
 
 
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(800, 800);
   console.log('A*');
   
   w = width / cols;
@@ -109,6 +110,14 @@ function setup() {
      for (let j = 0; j < rows; j++){
       
       grid[i][j] = new Spot(i,j);
+       
+      
+      if(floor(random(0,100)) <= 30){
+        
+        grid[i][j].f = 100000;
+        grid[i][j].pass = false;
+        
+      }
     
     }
     
@@ -125,8 +134,13 @@ function setup() {
     
   }
   
-  start = grid[0][0];
-  end = grid[cols-1][rows-1];
+  start = grid[cols - 1][0];
+  end = grid[cols - 30][rows-1];
+  
+  start.pass = true;
+  end.pass = true;
+  start.f = 0;
+  end.f = 0;
   
   openSet.push(start);
   
@@ -189,9 +203,14 @@ function draw() {
           
         }
         
+        if(neighbor.pass === true)
+        {
+          
         neighbor.h = heuristic(neighbor, end);
         neighbor.f = neighbor.g + neighbor.h;
         neighbor.previous = current;
+          
+        }
         
         
       }
@@ -210,7 +229,13 @@ function draw() {
     
     for(var j = 0; j < rows; j++){
       
-      grid[i][j].show(color(255));
+      if(grid[i][j].pass === true){
+        grid[i][j].show(color(255));
+      } else{
+        
+        grid[i][j].show(color(0));
+        
+      }
       
     }
     
@@ -218,11 +243,17 @@ function draw() {
   
   
   for ( let i = 0; i < closedSet.length; i++){
-    closedSet[i].show(color(255,0,0));
+    if(closedSet[i].pass === true)
+    {
+      closedSet[i].show(color(255,0,0));
+    }
   }
   
    for ( let i = 0; i < openSet.length; i++){
-    openSet[i].show(color(0,255,0));
+    if(openSet[i].pass === true)
+    {
+      openSet[i].show(color(0,255,0));
+    }
   }
   
       // Find the path Does not work
@@ -238,8 +269,8 @@ function draw() {
   
   
   for ( let i = 0; i< path.length; i++) {
-   
-    path[i].show(color(255,0,255));
+    
+    path[i].show(color(0,255,255));
     
   }
   

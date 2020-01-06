@@ -27,8 +27,7 @@ function heuristic(a,b){
 
 
 
-const cols = 30;
-const rows = 30;
+const squares = 100;
 
 let openSet = [];
 let closedSet = [];
@@ -38,7 +37,7 @@ let current;
 let w, h;
 let path = [];
 
-var grid = new Array(cols);
+var grid = new Array(squares);
 
 function Spot(i,j){
   
@@ -64,7 +63,7 @@ function Spot(i,j){
     let i = this.i;
     let j = this.j;
     
-    if (i < cols - 1){
+    if (i < squares - 1){
       
       this.neighbors.push(grid[i + 1][j]);
       
@@ -76,7 +75,7 @@ function Spot(i,j){
       
     }
     
-    if(j < rows-1){
+    if(j < squares-1){
       
       this.neighbors.push(grid[i][j + 1]);
       
@@ -92,24 +91,32 @@ function Spot(i,j){
   
 }
 
+function Super(){
+  
+  Spot.call(this, f, show);
+  this.i = floor(random(squares))
+  f = -10000;
+  
+}
+
 
 function setup() {
   createCanvas(800, 800);
   console.log('A*');
   
-  w = width / cols;
-  h = height/ rows;
+  w = width / squares;
+  h = height/ squares;
   
   //Making a 2d Array
-  for (let i = 0; i < cols; i++){
+  for (let i = 0; i < squares; i++){
     
-    grid[i] = new Array(rows);
+    grid[i] = new Array(squares);
     
   }
   
-  for (let i = 0; i < cols; i++){
+  for (let i = 0; i < squares; i++){
     
-     for (let j = 0; j < rows; j++){
+     for (let j = 0; j < squares; j++){
       
       grid[i][j] = new Spot(i,j);
        
@@ -126,9 +133,9 @@ function setup() {
   }
   
   
-  for ( i = 0; i < cols; i++){
+  for ( i = 0; i < squares; i++){
     
-    for (let j = 0; j < rows; j++){
+    for (let j = 0; j < squares; j++){
       
       grid[i][j].addNeighbors(grid);
     
@@ -137,7 +144,7 @@ function setup() {
   }
   
   start = grid[0][0];
-  end = grid[cols - 1][rows-1];
+  end = grid[squares - 1][squares - 1];
   
   start.pass = true;
   end.pass = true;
@@ -227,9 +234,9 @@ function draw() {
   
   background(0);
   
-  for (let i = 0; i < cols; i++){
+  for (let i = 0; i < squares; i++){
     
-    for(var j = 0; j < rows; j++){
+    for(var j = 0; j < squares; j++){
       
       if(grid[i][j].pass === true){
         grid[i][j].show(color(255));
@@ -257,6 +264,8 @@ function draw() {
       openSet[i].show(color(0,255,0));
     }
   }
+  
+  Super.show(color(255,255,0));
   
       // Find the path Does not work
     path = [];

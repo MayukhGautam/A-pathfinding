@@ -4,6 +4,7 @@
       FINISHED PART 1 VERSION
 
 */
+// change rows and cols to squares
 function removeFromArray(arr, elt){
   
   for (var i = arr.length-1; i >= 0 ; i--){
@@ -135,7 +136,7 @@ function setup() {
   }
   
   start = grid[cols - 1][0];
-  end = grid[cols - 30][rows-1];
+  end = grid[cols - cols][rows-1];
   
   start.pass = true;
   end.pass = true;

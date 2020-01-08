@@ -27,7 +27,7 @@ function heuristic(a,b){
 
 
 
-const squares = 100;
+const squares = 25;
 
 let openSet = [];
 let closedSet = [];
@@ -50,15 +50,20 @@ function Spot(i,j){
   this.previous = undefined;
   this.neighbors = [];
   
-  this.show = function(col){
+  
+}
+
+
+  Spot.prototype.show = function(col){
     
     fill(col);
     noStroke();
     rect(this.i*w, this.j*h, w-1, h-1 );
     
   }
-  
-  this.addNeighbors = function(grid){
+
+
+  Spot.prototype.addNeighbors = function(grid){
     
     let i = this.i;
     let j = this.j;
@@ -88,17 +93,24 @@ function Spot(i,j){
     }
     
   }
-  
+
+function Super(i, j){
+   
+    this.i = i;
+    this.j = j;
+    this.neighbors = [];
+    
 }
 
-function Super(){
+Super.prototype.move = function(grid, x, y){
   
-  Spot.call(this, f, show);
-  this.i = floor(random(squares))
-  f = -10000;
+  let temp = this.grid[this.i][this.j];
+  
+  grid[this.i][this.j] = grid[x][y];
+  
+  grid[x][y] = temp;
   
 }
-
 
 function setup() {
   createCanvas(800, 800);
@@ -264,8 +276,6 @@ function draw() {
       openSet[i].show(color(0,255,0));
     }
   }
-  
-  Super.show(color(255,255,0));
   
       // Find the path Does not work
     path = [];

@@ -1,7 +1,7 @@
 /*
       MAYUKH MIKE YASIR
       
-      Version 1.1
+      Version 1.5
       
       ADDED NON OBJECT ORIENTED OBSTACLES
 
@@ -23,14 +23,12 @@ function heuristic(a,b){
   return ( abs( a.i - b.i ) + abs( a.j - b.j ) );
   
 }
-  
-
-
 
 const squares = 25;
 
 let openSet = [];
 let closedSet = [];
+let SBlock = [];
 let start;
 let end;
 let current;
@@ -94,12 +92,17 @@ function Spot(i,j){
     
   }
 
-function Super(i, j){
+class Super extends Spot{
    
-    this.i = i;
-    this.j = j;
-    this.neighbors = [];
-    
+    super(i, j){
+      
+      this.i = i
+      this.j = j;
+      this.f = 1000000;
+      this.pass = false;
+      
+    }
+  
 }
 
 Super.prototype.move = function(grid, x, y){
@@ -114,7 +117,6 @@ Super.prototype.move = function(grid, x, y){
 
 function setup() {
   createCanvas(800, 800);
-  console.log('A*');
   
   w = width / squares;
   h = height/ squares;
@@ -129,8 +131,14 @@ function setup() {
   for (let i = 0; i < squares; i++){
     
      for (let j = 0; j < squares; j++){
-      
-      grid[i][j] = new Spot(i,j);
+       
+      if(floor(random(0,100)) <= 1){
+       
+        grid[i][j] = new Super(i,j)
+        SBlock.push(grid[i][j]);
+        
+      }
+      else{ grid[i][j] = new Spot(i,j); }
        
       
       if(floor(random(0,100)) <= 30){
@@ -165,11 +173,13 @@ function setup() {
   
   openSet.push(start);
   
-  console.log(grid);
-  
 }
 
+console.log(grid);
+
 function draw() {
+  
+  
   
   if(openSet.length > 0){
     
@@ -226,7 +236,7 @@ function draw() {
         
         if(neighbor.pass === true)
         {
-          
+        
         neighbor.h = heuristic(neighbor, end);
         neighbor.f = neighbor.g + neighbor.h;
         neighbor.previous = current;
@@ -295,6 +305,11 @@ function draw() {
     
   }
   
+  for(let i = 0; i<SBlock.length; i++) {
+   
+    SBlock[i].show(color(180,0,255));
+    
+  }
   
   
 }

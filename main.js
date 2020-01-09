@@ -37,20 +37,21 @@ let path = [];
 
 var grid = new Array(squares);
 
-function Spot(i,j){
+class Spot{
   
-  this.i = i;
-  this.j = j;
-  this.f = 0;
-  this.g = 0;
-  this.h = 0;
-  this.pass = true;
-  this.previous = undefined;
-  this.neighbors = [];
+  constructor(i,j){
+    this.i = i;
+    this.j = j;
+    this.f = 0;
+    this.g = 0;
+    this.h = 0;
+    this.pass = true;
+    this.previous = undefined;
+    this.neighbors = [];
+  }
   
   
 }
-
 
   Spot.prototype.show = function(col){
     
@@ -93,15 +94,15 @@ function Spot(i,j){
   }
 
 class Super extends Spot{
-   
-    super(i, j){
-      
-      this.i = i
-      this.j = j;
-      this.f = 1000000;
-      this.pass = false;
-      
-    }
+  
+  super(){}
+  
+  Wall(){
+    
+    this.f = 10000;
+    this.pass = false;
+  
+  }
   
 }
 
@@ -114,6 +115,8 @@ Super.prototype.move = function(grid, x, y){
   grid[x][y] = temp;
   
 }
+
+
 
 function setup() {
   createCanvas(800, 800);
@@ -132,22 +135,19 @@ function setup() {
     
      for (let j = 0; j < squares; j++){
        
-      if(floor(random(0,100)) <= 1){
+      var bool = (i === 0 && j === 0 )
+      var bool2 = (i === squares-1 && j === squares-1)
+       
+      if((floor(random(0,100)) <= 30) && bool === false && bool2 === false)
+        {
        
         grid[i][j] = new Super(i,j)
+        grid[i][j].Wall();
         SBlock.push(grid[i][j]);
         
       }
       else{ grid[i][j] = new Spot(i,j); }
        
-      
-      if(floor(random(0,100)) <= 30){
-        
-        grid[i][j].f = 100000;
-        grid[i][j].pass = false;
-        
-      }
-    
     }
     
   }
@@ -274,17 +274,15 @@ function draw() {
   
   
   for ( let i = 0; i < closedSet.length; i++){
-    if(closedSet[i].pass === true)
-    {
+
       closedSet[i].show(color(255,0,0));
-    }
+    
   }
   
    for ( let i = 0; i < openSet.length; i++){
-    if(openSet[i].pass === true)
-    {
+   
       openSet[i].show(color(0,255,0));
-    }
+     
   }
   
       // Find the path Does not work

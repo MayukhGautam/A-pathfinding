@@ -1,7 +1,7 @@
 /*
       MAYUKH MIKE YASIR
       
-      Version 3
+      Version 3.1
       
       ADDED NON OBJECT ORIENTED OBSTACLES
 
@@ -27,7 +27,7 @@ function heuristic(a,b){
 
 function blink(num){
   
-  if(num%50 <= 25){
+  if(num%25 <= 12){
     
    return(color(188,0,188));
     
@@ -35,7 +35,7 @@ function blink(num){
   
 }
 
-const squares = 35;
+const squares = 75;
 let openSet = [];
 let closedSet = [];
 let SBlock = [];

@@ -1,11 +1,12 @@
 /*
       MAYUKH MIKE YASIR
       
-      Version 1.5
+      Version 3
       
       ADDED NON OBJECT ORIENTED OBSTACLES
 
 */
+
 function removeFromArray(arr, elt){
   
   for (var i = arr.length-1; i >= 0 ; i--){
@@ -24,8 +25,17 @@ function heuristic(a,b){
   
 }
 
-const squares = 25;
+function blink(num){
+  
+  if(num%50 <= 25){
+    
+   return(color(188,0,188));
+    
+  }else{ return(color(255,255,0)); }
+  
+}
 
+const squares = 35;
 let openSet = [];
 let closedSet = [];
 let SBlock = [];
@@ -33,6 +43,8 @@ let start;
 let end;
 let current;
 let w, h;
+let count = 0;
+let done = false;
 let path = [];
 
 var grid = new Array(squares);
@@ -45,6 +57,8 @@ class Spot{
     this.f = 0;
     this.g = 0;
     this.h = 0;
+    this.points = 1;
+    this.donated = false;
     this.pass = true;
     this.previous = undefined;
     this.neighbors = [];
@@ -97,23 +111,45 @@ class Super extends Spot{
   
   super(){}
   
-  Wall(){
+  wall(){
     
     this.f = 10000;
     this.pass = false;
+    this.points = 0;
   
   }
   
-}
-
-Super.prototype.move = function(grid, x, y){
+  pWall(){
+    
+    this.points = -4;
+    
+  }
   
-  let temp = this.grid[this.i][this.j];
+  donate(list){
   
-  grid[this.i][this.j] = grid[x][y];
-  
-  grid[x][y] = temp;
-  
+    var atleastone = false
+    
+    for(var i = 0; i<list.length; i++){
+     
+      for(var j = 0; j<this.neighbors.length; j++){
+       
+        if(list[i] === this.neighbors[j]){
+         
+          list[i].points = this.points;
+          atleastone = true;
+         
+        }else{ this.donated = false; }
+      }
+    }
+    
+    if (atleastone === true){
+     
+      this.donated = true;
+      
+    }
+    
+    
+  }
 }
 
 
@@ -135,14 +171,21 @@ function setup() {
     
      for (let j = 0; j < squares; j++){
        
-      var bool = (i === 0 && j === 0 )
-      var bool2 = (i === squares-1 && j === squares-1)
+      var check = ((i === 0 && j === 0) || (i === 1 && j === 1) || (i === 0 && j === 1) || (i === 1 && j === 0));
+      
+      var check2 = ((i === squares-1 && j === squares-1) || (i === squares-2 && j === squares-2) || (i === squares-2 && j === squares-1) || (i === squares-1 && j === squares-2));
        
-      if((floor(random(0,100)) <= 30) && bool === false && bool2 === false)
-        {
+      if((floor(random(0,100)) <= 27) && check === false && check2 === false){
        
         grid[i][j] = new Super(i,j)
-        grid[i][j].Wall();
+        grid[i][j].wall();
+          
+        if((floor(random(0,100)) <= 10)){
+          
+          grid[i][j].pWall();
+          
+        }
+          
         SBlock.push(grid[i][j]);
         
       }
@@ -151,6 +194,8 @@ function setup() {
     }
     
   }
+  
+  console.log(grid);
   
   
   for ( i = 0; i < squares; i++){
@@ -175,11 +220,7 @@ function setup() {
   
 }
 
-console.log(grid);
-
 function draw() {
-  
-  
   
   if(openSet.length > 0){
     
@@ -198,9 +239,9 @@ function draw() {
     
     if(openSet[winner] === end){
       
+      done = true;
       noLoop();
       
-      console.log("DONE!");
       
     }
     
@@ -252,6 +293,7 @@ function draw() {
     //we can keep going
   }else{
     //no solution
+    
   }
   
   background(0);
@@ -260,13 +302,7 @@ function draw() {
     
     for(var j = 0; j < squares; j++){
       
-      if(grid[i][j].pass === true){
         grid[i][j].show(color(255));
-      } else{
-        
-        grid[i][j].show(color(0));
-        
-      }
       
     }
     
@@ -296,6 +332,30 @@ function draw() {
         
     }
   
+  for(let i = 0; i<SBlock.length; i++) {
+     
+    if(SBlock[i].points === -4){
+      
+      SBlock[i].donate(path);
+      
+      if(SBlock[i].donated === false){
+        
+        SBlock[i].show(color(188,0,188));
+        
+      }else{
+        
+        SBlock[i].show(blink(count));
+      }
+    
+      
+    }else{
+     
+      SBlock[i].show(color(0));
+      
+    }
+    
+  }
+  
   
   for ( let i = 0; i< path.length; i++) {
     
@@ -303,11 +363,39 @@ function draw() {
     
   }
   
-  for(let i = 0; i<SBlock.length; i++) {
-   
-    SBlock[i].show(color(180,0,255));
+  if(done === true){
     
+    let tPoints = 0;
+    
+    for( let i = 0; i<path.length; i++){
+      
+       tPoints += path[i].points 
+      
+    }
+  
+    for( let i = 0 ; i<SBlock.length; i++){
+      
+      if(SBlock[i].donated === true){
+          
+          SBlock[i].show(color(255,255,0));
+          
+      }
+    }
+    
+    fill(255);
+    rect(680,0,120,100);
+    fill(0);
+    
+    textSize(20);
+    text(tPoints + " Steps!", 690,25);//explain points
+    
+    textSize(20)
+    text("Yellow : -5", 690,50);
+    
+    textSize(20)
+    text("Blue : +1", 690,75);
   }
   
+  count++;
   
 }

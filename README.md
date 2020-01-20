@@ -1,4 +1,4 @@
-# A* pathfinding
+# A* path finding
  
  Modified A* code as seen on The Coding Train by Daniel Shiffman
  
